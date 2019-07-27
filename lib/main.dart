@@ -11,22 +11,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MyAppWithLogin());
 }
-
-class MyApp extends StatelessWidget {
-  Widget build(BuildContext context) {
-    var materialApp = MaterialApp(
-      title: 'MY APP',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: TasksPageWidget(),
-    );
-    return materialApp;
-  }
-}
-
+ 
 class MyAppWithLogin extends StatefulWidget {
   @override
   _MyAppWithLoginState createState() => _MyAppWithLoginState();

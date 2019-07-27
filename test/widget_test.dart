@@ -13,7 +13,7 @@ import 'package:e003_flutter_listview_crud_app_using_oauth2_secure_rest_api/main
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+    await tester.pumpWidget(MyAppWithLogin());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
