@@ -724,3 +724,11 @@ code to communicate with server
         );
     }
     }
+
+## Note
+
+- when importing http use as
+
+        import 'package:http/http.dart' as http;
+
+- when using hot reload use it twice , because sometimes the code does not refresh
