@@ -52,50 +52,48 @@ add
 
 full code
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.e003_flutter_listview_crud_app_using_oauth2_secure_rest_api">
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.example.e003_flutter_listview_crud_app_using_oauth2_secure_rest_api">
 
-    <!-- io.flutter.app.FlutterApplication is an android.app.Application that
-         calls FlutterMain.startInitialization(this); in its onCreate method.
-         In most cases you can leave this as-is, but you if you want to provide
-         additional functionality it is fine to subclass or reimplement
-         FlutterApplication and put your custom class here. -->
-    <application
-        android:name="io.flutter.app.FlutterApplication"
-        android:label="e003_flutter_listview_crud_app_using_oauth2_secure_rest_api"
-        android:icon="@mipmap/ic_launcher">
-        <activity
-            android:name=".MainActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
-            <!-- This keeps the window background of the activity showing
-                 until Flutter renders its first frame. It can be removed if
-                 there is no splash screen (such as the default splash screen
-                 defined in @style/LaunchTheme). -->
-            <meta-data
-                android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
-                android:value="true" />
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            <intent-filter>
-				<action android:name="android.intent.action.VIEW"/>
-				<category android:name="android.intent.category.DEFAULT" />
-				<category android:name="android.intent.category.BROWSABLE" />
-				<!-- Custom Path data -->
-				<data android:path="/auth" android:scheme="com.googleusercontent.apps.932931520457-buv2dnhgo7jjjjv5fckqltn367psbrlb"/>
-			</intent-filter>
-        </activity>
-    </application>
-</manifest>
+        <!-- io.flutter.app.FlutterApplication is an android.app.Application that
+            calls FlutterMain.startInitialization(this); in its onCreate method.
+            In most cases you can leave this as-is, but you if you want to provide
+            additional functionality it is fine to subclass or reimplement
+            FlutterApplication and put your custom class here. -->
+        <application
+            android:name="io.flutter.app.FlutterApplication"
+            android:label="e003_flutter_listview_crud_app_using_oauth2_secure_rest_api"
+            android:icon="@mipmap/ic_launcher">
+            <activity
+                android:name=".MainActivity"
+                android:launchMode="singleTop"
+                android:theme="@style/LaunchTheme"
+                android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+                android:hardwareAccelerated="true"
+                android:windowSoftInputMode="adjustResize">
+                <!-- This keeps the window background of the activity showing
+                    until Flutter renders its first frame. It can be removed if
+                    there is no splash screen (such as the default splash screen
+                    defined in @style/LaunchTheme). -->
+                <meta-data
+                    android:name="io.flutter.app.android.SplashScreenUntilFirstFrame"
+                    android:value="true" />
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN"/>
+                    <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW"/>
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+                    <!-- Custom Path data -->
+                    <data android:path="/auth" android:scheme="com.googleusercontent.apps.932931520457-buv2dnhgo7jjjjv5fckqltn367psbrlb"/>
+                </intent-filter>
+            </activity>
+        </application>
+    </manifest>
 
-## Step 3
-
-login code
+## Step 3 - login code
 
     var clientId = 'mvc';
     var clientSecret = 'secret';
@@ -276,9 +274,38 @@ login code
     return str.replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
     }
 
-## Step 4
+## Step 4 - Task Object 
 
-REST API Call
+Task Object to communicate with server
+
+    class TaskOpj {
+    String guid;
+    String note;
+    String createdAt;
+    String modfiledAt;
+
+    TaskOpj({this.guid, this.note, this.createdAt, this.modfiledAt});
+
+    TaskOpj.fromJson(Map<String, dynamic> json) {
+        guid = json['guid'];
+        note = json['note'];
+        createdAt = json['createdAt'];
+        modfiledAt = json['modfiledAt'];
+    }
+
+    Map<String, dynamic> toJson() {
+        final Map<String, dynamic> data = new Map<String, dynamic>();
+        data['guid'] = this.guid;
+        data['note'] = this.note;
+        data['createdAt'] = this.createdAt;
+        data['modfiledAt'] = this.modfiledAt;
+        return data;
+    }
+    }
+
+## Step 5 - REST API Call
+
+code to communicate with server
 
     class Tasks {
     static String apiEndpoint = "http://10.0.2.2:5011/api/Task/";
@@ -365,4 +392,335 @@ REST API Call
     }
     }
 
+## Step 6 - LoginPageWidget
 
+    class LoginPageWidget extends StatelessWidget {
+    final Function() notifyParent;
+    LoginPageWidget({Key key, @required this.notifyParent}) : super(key: key);
+    @override
+    Widget build(BuildContext context) => Scaffold(
+            body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                RaisedButton(
+                    onPressed: () async {
+                    await getTokenStep5();
+                    if (notifyParent != null) {
+                        notifyParent();
+                    }
+                    },
+                    child: Text("Login"),
+                ),
+                ],
+            ),
+            ),
+        );
+    }
+
+## Step 7 - TasksPageWidget
+
+    class TasksPageWidget extends StatefulWidget {
+    @override
+    _TasksPageWidgetState createState() => _TasksPageWidgetState();
+    }
+
+    class _TasksPageWidgetState extends State<TasksPageWidget> {
+    @override
+    void initState() {
+        super.initState();
+        refresh();
+    }
+
+    Future refresh() async {
+        tasks = await Tasks.allTasks();
+        setState(() {});
+    }
+
+    var tasks = List<TaskOpj>();
+
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+        appBar: AppBar(
+            title: Text("Tasks"),
+            actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () => refresh(),
+            ),
+            ],
+        ),
+        body: ListView.builder(
+            itemCount: tasks.length,
+            itemBuilder: (context, index) => TaskWidget(
+            taskOpj: tasks[index],
+            notifyParent: refresh,
+            ),
+        ),
+        floatingActionButton: FloatingActionButton(
+            onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) {
+                return TaskAddPageWidget(
+                    notifyParent: refresh,
+                );
+                },
+            ),
+            ),
+            tooltip: 'add',
+            child: Icon(Icons.add),
+        ),
+        );
+    }
+    }
+
+## Step 8 - TaskWidget
+
+    class TaskWidget extends StatelessWidget {
+    final TaskOpj taskOpj;
+    final Function() notifyParent;
+    TaskWidget({Key key, @required this.taskOpj, @required this.notifyParent})
+        : super(key: key);
+
+    @override
+    Widget build(BuildContext context) {
+        return Padding(
+        padding: const EdgeInsets.only(
+            top: 20.0,
+            bottom: 0.0,
+        ),
+        child: new Card(
+            child: ListTile(
+            leading: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) {
+                    return TaskEditPageWidget(
+                        taskOpj: taskOpj,
+                        notifyParent: notifyParent,
+                    );
+                    },
+                ),
+                ),
+            ),
+            title: Text(taskOpj.note),
+            subtitle: Text(taskOpj.guid),
+            trailing: new IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () async {
+                await Tasks.deleteTask(taskOpj.guid);
+                Scaffold.of(context).hideCurrentSnackBar();
+                Scaffold.of(context).showSnackBar(new SnackBar(
+                    content: new Text("Deleted note : " + taskOpj.guid),
+                ));
+                if (notifyParent != null) notifyParent();
+                },
+            ),
+            ),
+        ),
+        );
+    }
+    }
+
+## Step 9 - TaskEditPageWidget
+
+    class TaskEditPageWidget extends StatefulWidget {
+    final Function() notifyParent;
+    final TaskOpj taskOpj;
+    TaskEditPageWidget(
+        {Key key, @required this.taskOpj, @required this.notifyParent})
+        : super(key: key);
+
+    @override
+    _TaskEditPageWidgetState createState() => _TaskEditPageWidgetState();
+    }
+
+    class _TaskEditPageWidgetState extends State<TaskEditPageWidget> {
+    TextEditingController _noteController;
+
+    @override
+    void initState() {
+        super.initState();
+        _noteController = TextEditingController.fromValue(
+        TextEditingValue(
+            text: widget.taskOpj.note,
+        ),
+        );
+    }
+
+    @override
+    void dispose() {
+        _noteController.dispose();
+        super.dispose();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+        appBar: _appBar(),
+        body: _body(),
+        );
+    }
+
+    Widget _appBar() {
+        return AppBar(
+        title: new Text("Edit Task"),
+        actions: <Widget>[
+            new IconButton(
+            icon: new Icon(Icons.save),
+            onPressed: _save,
+            ),
+        ],
+        );
+    }
+
+    Widget _body() {
+        return SingleChildScrollView(
+        child: Column(
+            children: <Widget>[
+            Text("Note:"),
+            TextField(
+                decoration: InputDecoration(border: InputBorder.none),
+                autofocus: true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                controller: _noteController),
+            ],
+        ),
+        );
+    }
+
+    Future _save() async {
+        widget.taskOpj.note = _noteController.text;
+        await Tasks.updateTask(widget.taskOpj);
+        widget.notifyParent();
+        Navigator.pop(context);
+    }
+    }
+
+## Step 10 - TaskAddPageWidget
+
+    class TaskAddPageWidget extends StatefulWidget {
+    final Function() notifyParent;
+    TaskAddPageWidget({Key key, @required this.notifyParent}) : super(key: key);
+    @override
+    _TaskAddPageWidgetState createState() => _TaskAddPageWidgetState();
+    }
+
+    class _TaskAddPageWidgetState extends State<TaskAddPageWidget> {
+    TextEditingController _noteController;
+
+    @override
+    void initState() {
+        super.initState();
+        _noteController = TextEditingController();
+    }
+
+    @override
+    void dispose() {
+        _noteController.dispose();
+        super.dispose();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+        appBar: _appBar(),
+        body: _body(),
+        );
+    }
+
+    Widget _appBar() {
+        return AppBar(
+        title: new Text("Add Task"),
+        actions: <Widget>[
+            new IconButton(
+            icon: new Icon(Icons.save),
+            onPressed: _save,
+            ),
+        ],
+        );
+    }
+
+    Widget _body() {
+        return SingleChildScrollView(
+        child: Column(
+            children: <Widget>[
+            Text("Note:"),
+            TextField(
+                decoration: InputDecoration(border: InputBorder.none),
+                autofocus: true,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                controller: _noteController),
+            ],
+        ),
+        );
+    }
+
+    Future _save() async {
+        var taskOpj = TaskOpj();
+        taskOpj.note = _noteController.text;
+        await Tasks.createTask(taskOpj);
+        widget.notifyParent();
+        Navigator.pop(context);
+    }
+    }
+
+## Step 11 - main
+
+    void main() {
+    runApp(MyAppWithLogin());
+    }
+    
+    class MyAppWithLogin extends StatefulWidget {
+    @override
+    _MyAppWithLoginState createState() => _MyAppWithLoginState();
+    }
+
+    class _MyAppWithLoginState extends State<MyAppWithLogin> {
+    Future refresh() async {
+        setState(() {});
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        var materialApp = MaterialApp(
+            title: 'MY APP',
+            theme: ThemeData(
+            primarySwatch: Colors.blue,
+            ),
+            home: getHomeWidget(context));
+        return materialApp;
+    }
+
+    Widget getHomeWidget(BuildContext context) {
+        return new FutureBuilder(
+        future: getHome(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+            return snapshot.data;
+            } else {
+            return CircularProgressIndicator();
+            }
+        },
+        );
+    }
+
+    Future<Widget> getHome() async {
+        if (isLoggedin != null) {
+        var _isLoggedin = await isLoggedin.future;
+        if (_isLoggedin) {
+            return TasksPageWidget();
+        }
+        }
+        return LoginPageWidget(
+        notifyParent: refresh,
+        );
+    }
+    }
